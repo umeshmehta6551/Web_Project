@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff8e1;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #e65100;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #ffcc80;
+    }
+    tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <h1>Order History</h1>
+  <table id="historyTable">
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Table</th>
+        <th>Items</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadOrderHistory() {
+      const res = await fetch('http://localhost:5000/api/orders');
+      const orders = await res.json();
+      const tbody = document.querySelector('#historyTable tbody');
+
+      orders.reverse().forEach(order => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${order.customerName}</td>
+          <td>${order.tableNumber || 'N/A'}</td>
+          <td>${order.items.join(', ')}</td>
+          <td>₹${order.total}</td>
+          <td>${order.status}</td>
+          <td>${new Date(order.createdAt).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadOrderHistory();
+  </script>
+</body>
+</html>

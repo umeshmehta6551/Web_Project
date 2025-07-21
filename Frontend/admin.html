@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff8f0;
+    }
+
+    header {
+      background-color: #ff6f00;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+
+    #datetime {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 14px;
+      color: #ffe0b2;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    nav {
+      background-color: #ffe0b2;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #e65100;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 15px;
+      background-color: #fff3e0;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #ffcc80;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 120px);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard - Restaurant Management</h1>
+    <div id="datetime"></div>
+  </header>
+
+  <nav>
+    <a href="orders.html" target="contentFrame">View Orders</a>
+    <a href="order-history.html" target="contentFrame">Order History</a>
+    <a href="inventory.html" target="contentFrame">Inventory</a>
+    <a href="notifications.html" target="contentFrame">Notifications</a>
+    <a href="generate-bill.html" target="contentFrame">Generate Bill</a>
+  </nav>
+
+  <iframe name="contentFrame" src="orders.html"></iframe>
+
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById("datetime").innerText = now.toLocaleString();
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
+</body>
+</html>

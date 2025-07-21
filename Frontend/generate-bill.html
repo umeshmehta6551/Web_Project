@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generate Bill</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #fff3e0;
+    }
+    h1 {
+      color: #ef6c00;
+      text-align: center;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    select, input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e65100;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generate PDF Bill</h1>
+  <div class="form-container">
+    <select id="orderSelect" onchange="fillOrderDetails()">
+      <option value="">-- Select Completed Order --</option>
+    </select>
+    <input type="text" id="customerName" placeholder="Customer Name" readonly>
+    <input type="text" id="tableNumber" placeholder="Table Number" readonly>
+    <textarea id="items" placeholder="Items" rows="4" readonly></textarea>
+    <input type="number" id="total" placeholder="Total Amount" readonly>
+    <button onclick="generatePDF()">Generate Bill</button>
+  </div>
+
+  <script>
+    async function fetchOrders() {
+      try {
+        const response = await fetch("http://localhost:5000/api/orders");
+        if (!response.ok) throw new Error("Failed to fetch orders");
+        const data = await response.json();
+        const completed = data.filter(order => order.status === "Completed");
+        const select = document.getElementById("orderSelect");
+
+        completed.forEach(order => {
+          const opt = document.createElement("option");
+          opt.value = JSON.stringify(order);
+          opt.innerText = `Order by ${order.customerName} (Table ${order.tableNumber})`;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        alert("❌ Error loading completed orders.");
+        console.error(err);
+      }
+    }
+
+    function fillOrderDetails() {
+      const selected = document.getElementById("orderSelect").value;
+      if (!selected) return;
+      const order = JSON.parse(selected);
+      document.getElementById("customerName").value = order.customerName;
+      document.getElementById("tableNumber").value = order.tableNumber;
+      document.getElementById("items").value = order.items.join("\n");
+      document.getElementById("total").value = order.total || 0;
+    }
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const name = document.getElementById('customerName').value;
+      const table = document.getElementById('tableNumber').value;
+      const items = document.getElementById('items').value;
+      const total = document.getElementById('total').value;
+
+      if (!name || !table || !items || !total) {
+        alert("⚠️ Please select a completed order.");
+        return;
+      }
+
+      doc.setFontSize(18);
+      doc.text("Restaurant Bill", 70, 20);
+
+      doc.setFontSize(12);
+      doc.text(`Customer Name: ${name}`, 20, 40);
+      doc.text(`Table Number: ${table}`, 20, 50);
+      doc.text("Items Ordered:", 20, 60);
+      
+      const itemLines = items.split("\n");
+      let y = 70;
+      itemLines.forEach(item => {
+        doc.text(`- ${item}`, 25, y);
+        y += 8;
+      });
+
+      doc.text(`Total Amount: ₹${total}`, 20, y + 10);
+      doc.text(`Date: ${new Date().toLocaleString()}`, 20, y + 20);
+
+      doc.save(`Bill_${name}_Table${table}.pdf`);
+    }
+
+    fetchOrders();
+  </script>
+</body>
+</html>

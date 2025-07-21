@@ -1,0 +1,129 @@
+<!-- customer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Order - FineDine</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #fdf6f0;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    header {
+      background-color: #c0392b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .menu-item {
+      margin: 10px 0;
+    }
+    .menu-item input {
+      margin-right: 10px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🍽️ FineDine - Place Your Order</h1>
+  </header>
+  <div class="container">
+    <form id="order-form">
+      <h2>Customer Details</h2>
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+
+      <label for="table">Table Number:</label>
+      <input type="text" id="table" required>
+
+      <h2>Menu</h2>
+      <div class="menu-item"><input type="checkbox" name="item" value="Pizza"> Pizza - ₹200</div>
+      <div class="menu-item"><input type="checkbox" name="item" value="Burger"> Burger - ₹150</div>
+      <div class="menu-item"><input type="checkbox" name="item" value="Pasta"> Pasta - ₹180</div>
+      <div class="menu-item"><input type="checkbox" name="item" value="Sandwich"> Sandwich - ₹120</div>
+      <div class="menu-item"><input type="checkbox" name="item" value="Noodles"> Noodles - ₹130</div>
+      <div class="menu-item"><input type="checkbox" name="item" value="Cold Drink"> Cold Drink - ₹50</div>
+
+      <button type="submit">Submit Order</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('order-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const table = document.getElementById('table').value;
+      const items = Array.from(document.querySelectorAll('input[name="item"]:checked')).map(input => input.value);
+
+      const prices = {
+        'Pizza': 200,
+        'Burger': 150,
+        'Pasta': 180,
+        'Sandwich': 120,
+        'Noodles': 130,
+        'Cold Drink': 50
+      };
+
+      let total = 0;
+      items.forEach(item => total += prices[item]);
+
+      const order = {
+        customerName: name,
+        tableNumber: table,
+        items: items,
+        totalAmount: total
+      };
+
+      try {
+        const res = await fetch('http://localhost:5000/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order)
+        });
+        const data = await res.json();
+        alert('Order placed successfully!');
+        location.reload();
+      } catch (error) {
+        alert('Failed to place order.');
+      }
+    });
+  </script>
+</body>
+</html>

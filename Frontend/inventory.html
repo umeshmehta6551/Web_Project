@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff3e0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #ef6c00;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #ffb74d;
+    }
+    .btn {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn:hover {
+      background: #e65100;
+    }
+  </style>
+</head>
+<body>
+  <h1>Inventory Management</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="inventoryTable">
+      <!-- Inventory rows here -->
+    </tbody>
+  </table>
+
+  <script>
+    const inventory = [
+      { name: 'Pizza Dough', quantity: 40 },
+      { name: 'Cheese', quantity: 30 },
+      { name: 'Tomato Sauce', quantity: 20 },
+      { name: 'Soft Drinks', quantity: 50 },
+    ];
+
+    const inventoryTable = document.getElementById('inventoryTable');
+
+    function renderInventory() {
+      inventoryTable.innerHTML = '';
+      inventory.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td><button class="btn" onclick="reduceStock(${index})">Use One</button></td>
+        `;
+        inventoryTable.appendChild(row);
+      });
+    }
+
+    function reduceStock(index) {
+      if (inventory[index].quantity > 0) {
+        inventory[index].quantity--;
+        renderInventory();
+      }
+    }
+
+    renderInventory();
+  </script>
+</body>
+</html>

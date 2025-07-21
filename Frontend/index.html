@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1551218808-94e220e084d2');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 100px 20px;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 3em;
+      color: orange;
+    }
+    .buttons {
+      margin-top: 50px;
+    }
+    .buttons button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      margin: 10px;
+      background-color: orange;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #datetime {
+      margin-top: 30px;
+      font-size: 1.1em;
+      color: #fdd835;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>Welcome to The Orange Spoon</h1>
+    <div class="buttons">
+      <button onclick="window.location.href='customer.html'">Customer</button>
+      <button onclick="document.getElementById('adminLogin').style.display='block'">Admin</button>
+    </div>
+    <div id="adminLogin" style="display:none; margin-top: 20px;">
+      <input type="text" id="adminId" placeholder="Admin ID" />
+      <input type="password" id="adminPassword" placeholder="Password" />
+      <button onclick="loginAdmin()">Login</button>
+    </div>
+    <div id="datetime"></div>
+  </div>
+
+  <script>
+    function loginAdmin() {
+      const id = document.getElementById('adminId').value;
+      const pass = document.getElementById('adminPassword').value;
+      if (id === 'admin' && pass === 'admin123') {
+        window.location.href = 'admin.html';
+      } else {
+        alert('Invalid credentials');
+      }
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById('datetime').innerText = now.toLocaleString();
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
+</body>
+</html>
